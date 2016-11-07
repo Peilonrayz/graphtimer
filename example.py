@@ -32,7 +32,7 @@ class Timer(GraphTimer):
         time('from __main__ import {} as fn; a = list(range({}))', number=100),
         time('from __main__ import {} as fn, UnoptimisedRange as range; a = range({})', number=100),
     ]
-    domain = list(range(0, 1001, 100))
+    domain = list(range(0, 10001, 1000))
     titles = [
         'Range',
         'List',
@@ -41,7 +41,7 @@ class Timer(GraphTimer):
 
 def main():
     fig, axs = plt.subplots(nrows=2, ncols=2, sharex=True)
-    Timer().plot_axes(flat(axs), amount=1, show_titles=True)
+    Timer().plot_axes(flat(axs), amount=10, show_titles=True)
     plt.show()
 
 if __name__ == '__main__':
