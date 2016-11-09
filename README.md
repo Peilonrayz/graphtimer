@@ -4,8 +4,8 @@ Small module to simplify the creation of graphs for timings.
 
 There are two public functions:
 
- - `time` - A helper function to `timeit.timeit`. It changes the argument layout so the command is the last peramiter, with the default `'fn(a)'`. This is as in most my timings I've only needed one function. I also pass `a` as I normally time against a single amount.
- - `flat` - This is a rudementry function that changes an input to a flatterned list.
+ - `time` - A partial builder `timeit.timeit`. Subsequent call will call `timeit` with the string passed as parameter as its setup, automatically adding the import of a function from `__main__`. The function will then be timed by passing the provided parameter, which default to `a`.
+ - `flat` - A rudementry function that changes an input to a flattened list.
 
 There is also the class `GraphTimer`. This holds five class variables that are all lists:
 

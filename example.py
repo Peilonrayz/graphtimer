@@ -1,4 +1,6 @@
-from itertools import islice
+import matplotlib.pyplot as plt
+from graphtimer import flat, GraphTimer
+
 
 class UnoptimisedRange(object):
     def __init__(self, size):
@@ -9,8 +11,10 @@ class UnoptimisedRange(object):
             raise IndexError()
         return i
 
+
 def list_comp(iterable):
     return [i for i in iterable]
+
 
 def list_append(iterable):
     a = []
@@ -19,8 +23,6 @@ def list_append(iterable):
         append(i)
     return a
 
-import matplotlib.pyplot as plt
-from graphtimer import time, flat, GraphTimer
 
 class Timer(GraphTimer):
     functions = [
@@ -28,11 +30,11 @@ class Timer(GraphTimer):
         'list_append',
     ]
     inputs = [
-        time('from __main__ import {} as fn; a = range({})', number=100),
-        time('from __main__ import {} as fn; a = list(range({}))', number=100),
-        time('from __main__ import {} as fn, UnoptimisedRange as range; a = range({})', number=100),
+        'a = range({})',
+        'a = list(range({}))',
+        'from __main__ import UnoptimisedRange as range; a = range({})',
     ]
-    domain = list(range(0, 10001, 1000))
+    domain = range(0, 10001, 1000)
     titles = [
         'Range',
         'List',
@@ -41,7 +43,7 @@ class Timer(GraphTimer):
 
 def main():
     fig, axs = plt.subplots(nrows=2, ncols=2, sharex=True)
-    Timer().plot_axes(flat(axs), amount=10, show_titles=True)
+    Timer(amount=10, number=100).plot_axes(flat(axs), show_titles=True, use_errorbar=True)
     plt.show()
 
 if __name__ == '__main__':
