@@ -3,7 +3,7 @@ from .graphtimer import (
 )
 from .graph import MatPlotLib
 from .plotter import Plotter
-from .timers import MultiTimer, FunctionTimer
+from .timers import MultiTimer, TimerNamespace
 
 __all__ = [
     'CATEGORY10',
@@ -16,7 +16,7 @@ __all__ = [
 
     # Timers
     'MultiTimer',
-    'FunctionTimer',
+    'TimerNamespace',
 
     # Graphs
     'MatPlotLib',

@@ -16,6 +16,8 @@ class MultiTimer:
             domain = domain,
         if args_conv is not SENTINAL:
             domain = args_conv(*domain)
+            if not isinstance(domain, tuple):
+                domain = domain,
 
         if globals is SENTINAL:
             globals = {}
@@ -72,7 +74,7 @@ class MultiTimer:
         ]
 
 
-class FunctionTimerMeta(type):
+class TimerNamespaceMeta(type):
     """Convenience class to ease creation of a MultiTimer."""
     def __new__(mcs, name, bases, attrs):
         if 'functions' in attrs:
@@ -80,14 +82,14 @@ class FunctionTimerMeta(type):
         if 'multi_timer' in attrs:
             raise TypeError('FunctionTimers cannot define `multi_timer`')
 
-        ret: FunctionTimer = super().__new__(mcs, name, bases, attrs)
+        ret: TimerNamespace = super().__new__(mcs, name, bases, attrs)
         functions = [v for k, v in attrs.items() if k.startswith('test')]
         ret.functions = functions
         ret.multi_timer = ret.MULTI_TIMER(functions, ret.TIMER)
         return ret
 
 
-class FunctionTimer(metaclass=FunctionTimerMeta):
+class TimerNamespace(metaclass=TimerNamespaceMeta):
     """Convenience class to ease creation of a MultiTimer."""
     TIMER = timeit.Timer
     MULTI_TIMER = MultiTimer

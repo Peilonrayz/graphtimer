@@ -13,7 +13,7 @@ ArgsConvFunction = Callable[..., Tuple[Any, ...]]
 class MultiTimer:
     functions: List[TimedFunction]
     timer: Type[timeit.Timer]
-    def __init__(self, functions: List[TimedFunction], timer: Type[timeit.Timer]) -> None:
+    def __init__(self, functions: List[TimedFunction], timer: Type[timeit.Timer]=timeit.Timer) -> None:
         ...
 
     def build_timer(self,
@@ -68,12 +68,12 @@ class MultiTimer:
         ...
 
 
-class FunctionTimerMeta:
-    def __new__(mcs: type, name: str, bases: Tuple[type, ...], attrs: Dict[str, Any]) -> FunctionTimer:
+class TimerNamespaceMeta:
+    def __new__(mcs: type, name: str, bases: Tuple[type, ...], attrs: Dict[str, Any]) -> TimerNamespace:
         ...
 
 
-class FunctionTimer:
+class TimerNamespace:
     TIMER: Type[timeit.Timer]
     MULTI_TIMER: Type[MultiTimer]
     functions: List[TimedFunction]

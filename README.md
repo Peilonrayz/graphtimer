@@ -1,16 +1,40 @@
 # graphtimer
 
-Small module to simplify the creation of graphs for timings.
+This library is based around generating nice graphs for timings.
+It's highly modular and provides an interface to quickly and cleanly use modules. 
 
-There are two public functions:
+The high-level interface is the `Plotter` class which takes a timer class as its only argument. The builtin timer is `MultiTimer`, where `TimerNamespace` builds it without you having to. 
 
- - `time` - A partial builder `timeit.timeit`. Subsequent call will call `timeit` with the string passed as parameter as its setup, automatically adding the import of a function from `__main__`. The function will then be timed by passing the provided parameter, which default to `a`.
- - `flat` - A rudementry function that changes an input to a flattened list.
+From here you have three steps:
 
-There is also the class `GraphTimer`. This holds five class variables that are all lists:
+1. Time the code by using the timer provided. Usual usage is `repeat`, as `timeit` only times the functions once and skips step 2.
+2. Perform the statistical analysis on the timings. Most of the time you'll want to use `min`, which gets the lowest value that isn't an outlier. And shows the error bars from the lowest outlier to Q<sub>3</sub>.
+3. Plot the data on the graph. This by default uses `matplotlib` via the `MatPlotLib` class.
 
- - `functions` - List of functions to passed to the `timeit`s `setup`.
- - `inputs` - List of `functools.partial` wrapped `timeit`s. This is to delay timings.
- - `domain` - List of inputs to test against.
- - `title` - List of graph titles.
- - `colors` - List of colours to use as the line, and area, colours.
+```python
+import matplotlib.pyplot as plt
+from graphtimer import Plotter, TimerNamespace
+
+
+class ManualListCreation(TimerNamespace):
+    def test_comprehension(iterable):
+        return [i for i in iterable]
+
+    def test_append(iterable):
+        a = []
+        append = a.append
+        for i in iterable:
+            append(i)
+        return a
+
+
+fig, axs = plt.subplots()
+(
+    Plotter(ManualListCreation)
+        .repeat(100, 5, list(range(0, 10001, 1000)), args_conv=range)
+        .min()
+        .plot(axs)
+)
+fig.show()
+```
+
