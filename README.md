@@ -38,3 +38,10 @@ fig, axs = plt.subplots()
 fig.show()
 ```
 
+## Installation
+
+To install graphtimer, just use pip:
+
+```
+$ pip install graphtimer
+```
