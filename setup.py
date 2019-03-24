@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 from setuptools import setup, find_packages
 
-version = '0.0.2'
+version = '0.0.3'
 description = 'Time code execution and graph results'
 with open('README.md', 'r') as f:
     long_description = f.read()
@@ -29,6 +29,7 @@ setup(
     version=version,
     description=description,
     long_description=long_description,
+    long_description_content_type="text/markdown",
     author='Peilonrayz',
     author_email='peilonrayz@gmail.com',
     url='https://github.com/Peilonrayz/graphtimer',
