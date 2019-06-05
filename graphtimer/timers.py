@@ -1,6 +1,8 @@
 import timeit
+import inspect
 
 SENTINAL = object()
+PASSABLE_KEYWORDS = {'_i'}
 
 
 class MultiTimer:
@@ -10,12 +12,25 @@ class MultiTimer:
         self.functions = functions
 
     def build_timer(self, fn, domain, stmt='fn(*args)', setup='pass', timer=SENTINAL, globals=SENTINAL,
-                    args_conv=SENTINAL):
+                    args_conv=SENTINAL, **extras):
         """Build a timeit.Timer"""
         if not isinstance(domain, tuple):
             domain = domain,
         if args_conv is not SENTINAL:
-            domain = args_conv(*domain)
+            kwargs = {}
+            try:
+                sig = inspect.signature(args_conv)
+            except TypeError:
+                pass
+            else:
+                for param in sig.parameters.values():
+                    if (param.name in PASSABLE_KEYWORDS
+                        and param.name in extras
+                        and param.kind == inspect.Parameter.KEYWORD_ONLY
+                    ):
+                        kwargs[param.name] = extras[param.name]
+
+            domain = args_conv(*domain, **kwargs)
             if not isinstance(domain, tuple):
                 domain = domain,
 
@@ -47,9 +62,9 @@ class MultiTimer:
         if len(domain) == 0:
             raise ValueError('domain must have at least one argument.')
 
-        functions = self.build_timers(domain, *args, **kwargs)
-        output = [[[] for _ in domain] for _ in functions[0]]
-        for _ in range(repeat):
+        output = [[[] for _ in domain] for _ in self.functions]
+        for repeat_num in range(repeat):
+            functions = self.build_timers(domain, *args, **kwargs, _i=repeat_num)
             for j, fns in enumerate(functions):
                 for i, fn in enumerate(fns):
                     output[i][j].append(call(fn))
