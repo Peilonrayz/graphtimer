@@ -22,5 +22,9 @@ class MatPlotLib:
         if title is not None and hasattr(graph, 'set_title'):
             graph.set_title(title)
         if legend and functions is not None and hasattr(graph, 'legend'):
-            graph.legend(lines, [fn.__name__ for fn in functions], loc=0)
+            legend = [
+                getattr(fn, '__qualname__', None) or fn.__name__
+                for fn in functions
+            ]
+            graph.legend(lines, legend, loc=0)
         return lines

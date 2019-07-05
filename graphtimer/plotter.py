@@ -1,4 +1,8 @@
+import numpy as np
+import functools
+
 from .graph import MatPlotLib
+from . import helpers
 
 
 class Plotter:
@@ -21,66 +25,11 @@ class Plotter:
         )
 
 
-class _DataSet:
-    """Holds timeit values and defines statistical methods around them."""
-    def __init__(self, values):
-        self.values = sorted(values)
-
-    def quartile_indexes(self, outlier):
-        """Generates the quartile indexes. Uses tukey's fences to remove outliers."""
-        delta = (len(self.values) - 1) / 4
-        quartiles = [int(round(delta * i)) for i in range(5)]
-        if outlier is not None:
-            if outlier < 0:
-                raise ValueError("outlier should be non-negative.")
-            iqr = outlier * (self.values[quartiles[3]] - self.values[quartiles[1]])
-            low = self.values[quartiles[1]] - iqr
-            high = self.values[quartiles[3]] + iqr
-
-            for i, v in enumerate(self.values):
-                if v >= low:
-                    quartiles[0] = i
-                    break
-
-            for i, v in reversed(list(enumerate(self.values))):
-                if v <= high:
-                    quartiles[4] = i
-                    break
-        return tuple(quartiles)
-
-    def errors(self, errors, outlier):
-        """Returns tuples containing the quartiles wanted."""
-        if errors is None:
-            return None
-        quartiles = self.quartile_indexes(outlier)
-        # Allow out of quartile error bars using -1 and 5.
-        quartiles += (-1, 0)
-        return [
-            (
-                self.values[quartiles[start]],
-                self.values[quartiles[stop]]
-            )
-            for start, stop in errors
-        ]
-
-    def quartile(self, quartile, outlier):
-        """Return the value of the quartile provided."""
-        quartiles = self.quartile_indexes(outlier)
-        return self.values[quartiles[quartile]]
-
-    def mean(self, start, end, outlier):
-        """Return the mean of the values over the quartiles specified."""
-        quartiles = self.quartile_indexes(outlier)
-        start = quartiles[start]
-        end = quartiles[end]
-        return sum(self.values[start:end + 1]) / (1 + end - start)
-
-
 class PlotTimings:
     """Thin interface over _DataSet"""
     def __init__(self, data, kwargs):
         self.data = [
-            [_DataSet(results) for results in function_values]
+            [results for results in function_values]
             for function_values in data
         ]
         self.kwargs = kwargs
@@ -88,16 +37,7 @@ class PlotTimings:
     def quartile(self, quartile, *, errors=None, outlier=1.5):
         """Interface to _DataSet.quartile and errors. Returns a PlotValues."""
         return PlotValues(
-            [
-                [
-                    _DataValues(
-                        ds.quartile(quartile, outlier),
-                        ds.errors(errors, outlier)
-                    )
-                    for ds in function_values
-                ]
-                for function_values in self.data
-            ],
+            helpers.quartiles(self.data, outlier, quartile, errors, 2),
             self.kwargs
         )
 
@@ -114,23 +54,13 @@ class PlotTimings:
         return PlotValues(
             [
                 [
-                    _DataValues(
-                        ds.mean(start, end, outlier),
-                        ds.errors(errors, outlier)
-                    )
-                    for ds in function_values
+                    helpers.mean(values, outlier, start, end, errors)
+                    for values in function_values
                 ]
                 for function_values in self.data
             ],
             self.kwargs
         )
-
-
-class _DataValues:
-    """Holds the wanted statistical data from the timings."""
-    def __init__(self, value, errors):
-        self.value = value
-        self.errors = errors
 
 
 class PlotValues:

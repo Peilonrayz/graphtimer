@@ -20,7 +20,7 @@ class MultiTimer:
             kwargs = {}
             try:
                 sig = inspect.signature(args_conv)
-            except TypeError:
+            except (TypeError, ValueError):
                 pass
             else:
                 for param in sig.parameters.values():
