@@ -54,7 +54,8 @@ TOut = TypeVar('TOut')
 class Graph(typing_extensions.Protocol, Generic[TIn, TOut]):
     def graph(self,
               graph: TIn,
-              data: List[List[Any]],
+              values: List[float],
+              errors: List[float],
               domain: List[Any],
               *,
               functions: Optional[List[TimedFunction]] = None,

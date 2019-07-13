@@ -8,8 +8,10 @@ from graphtimer import flat, Plotter
 
 import helpers.functions as se_code
 
+ALL_TESTS = True
 
-@pytest.mark.skipif(pathlib.Path('static/figs/reverse.png').exists(),
+
+@pytest.mark.skipif(pathlib.Path('static/figs/reverse.png').exists() and ALL_TESTS,
                     reason='Output image already exists')
 def test_reverse_plot():
     fig, axs = plt.subplots()
@@ -25,7 +27,7 @@ def test_reverse_plot():
     fig.savefig('static/figs/reverse.svg')
 
 
-@pytest.mark.skipif(pathlib.Path('static/figs/graipher.png').exists(),
+@pytest.mark.skipif(pathlib.Path('static/figs/graipher.png').exists() and ALL_TESTS,
                     reason='Output image already exists')
 def test_graipher_plot():
     fig, axs = plt.subplots()
@@ -39,7 +41,7 @@ def test_graipher_plot():
     fig.savefig('static/figs/graipher.svg')
 
 
-@pytest.mark.skipif(pathlib.Path('static/figs/peilonrayz.png').exists(),
+@pytest.mark.skipif(pathlib.Path('static/figs/peilonrayz.png').exists() and ALL_TESTS,
                     reason='Output image already exists')
 def test_peilonrayz_plot():
     fig, axs = plt.subplots(nrows=2, ncols=2, sharex=True, sharey=True)

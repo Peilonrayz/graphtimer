@@ -44,7 +44,7 @@ class _DataSet:
 
 
 class PlotTimings:
-    data: List[List[_DataSet]]
+    data: List[List[List[Value]]]
     kwargs: KWArgs
 
     def __init__(self, data: List[List[List[Value]]], kwargs: KWArgs) -> None:
@@ -73,10 +73,11 @@ class _DataValues:
 
 
 class PlotValues:
-    data: List[List[_DataValues]]
+    values: List[float]
+    errors: List[float]
     kwargs: KWArgs
 
-    def __init__(self, data: List[List[_DataValues]], kwargs: KWArgs) -> None:
+    def __init__(self, values: List[float], errors: List[float], kwargs: KWArgs) -> None:
         ...
 
     def plot(self, graph: TIn, graph_lib: Type[Graph[TIn, TOut]] = MatPlotLib, **kwargs: Any) -> List[TOut]:
