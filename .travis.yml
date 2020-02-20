@@ -1,0 +1,23 @@
+language: python
+dist: xenial
+matrix:
+  include:
+    - python: 3.4
+      env: NOXSESSION="tests-3.4"
+    - python: 3.5
+      env: NOXSESSION="coverage-3.5"
+    - python: 3.6
+      env: NOXSESSION="coverage-3.6"
+    - python: 3.7
+      env: NOXSESSION="coverage-3.7"
+    - python: 3.8
+      env: NOXSESSION="coverage-3.8"
+    - python: 3.8
+      env: NOXSESSION="lint"
+    - python: 3.8
+      env: NOXSESSION="docs"
+install:
+  - pip install --upgrade pip setuptools
+  - pip install . nox
+script:
+  - nox --session "$NOXSESSION"
