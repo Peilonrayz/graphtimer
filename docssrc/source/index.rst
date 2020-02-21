@@ -1,4 +1,4 @@
-Welcome to graphtimer's documentation!
+Welcome to GraphTimer's documentation!
 =======================================
 
 .. toctree::

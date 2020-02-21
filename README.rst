@@ -1,4 +1,4 @@
-graphtimer
+GraphTimer
 ==========
 
 .. image:: https://travis-ci.com/Peilonrayz/graphtimer.svg?branch=master
@@ -76,4 +76,4 @@ To run all tests run ``nox``. No venv is needed; nox makes all of them for us.
 License
 -------
 
-graphtimer is available under the MIT license.
+GraphTimer is available under the MIT license.

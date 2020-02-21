@@ -38,3 +38,4 @@ manager.lint(python.Flake8)
 )
 def display(messages):
     linty.display.default(messages)
+    messages.clear()  # TODO: remove

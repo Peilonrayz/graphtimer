@@ -1,5 +1,5 @@
-import time
 import math
+import time
 
 from graphtimer import TimerNamespace
 
@@ -26,7 +26,7 @@ class Peilonrayz(TimerNamespace):
         return a
 
 
-SCALE = 10.
+SCALE = 10.0
 
 
 class Graipher(TimerNamespace):
@@ -48,18 +48,18 @@ class Graipher(TimerNamespace):
 
 class Reverse(TimerNamespace):
     def test_orig(stri):
-        output = ''
+        output = ""
         length = len(stri)
         while length > 0:
             output += stri[-1]
-            stri, length = (stri[0:length - 1], length - 1)
+            stri, length = (stri[0 : length - 1], length - 1)
         return output
 
     def test_g(s):
         return s[::-1]
 
     def test_s(s):
-        return ''.join(reversed(s))
+        return "".join(reversed(s))
 
 
 SCALES_SCALE = 1000

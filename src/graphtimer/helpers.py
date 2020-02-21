@@ -2,12 +2,7 @@ import numpy as np
 
 
 def quartiles(values, outlier=1.5):
-    quartiles = (
-        np.linspace(0, len(values) - 1, num=5)
-            .round()
-            .astype('int')
-            .tolist()
-    )
+    quartiles = np.linspace(0, len(values) - 1, num=5).round().astype("int").tolist()
 
     if outlier is not None:
         if outlier < 0:
@@ -41,4 +36,4 @@ def mean(values, outlier, start, end):
     qs = quartiles(outlier)
     start = qs[start]
     end = qs[end]
-    return np.mean(values[start:end + 1])
+    return np.mean(values[start : end + 1])

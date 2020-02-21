@@ -1,13 +1,14 @@
 import numpy as np
 
-from .graph import MatPlotLib
 from . import helpers
+from .graph import MatPlotLib
 
 
 class Plotter:
     """Interface to the timer object. Returns objects made to ease usage."""
+
     def __init__(self, timer):
-        self.timer = getattr(timer, 'multi_timer', timer)
+        self.timer = getattr(timer, "multi_timer", timer)
 
     def timeit(self, number, domain, *args, **kwargs):
         """Interface to self.timer.timeit. Returns a PlotValues."""
@@ -17,15 +18,13 @@ class Plotter:
         """Interface to self.timer.repeat. Returns a PlotTimings."""
         return PlotTimings(
             self.timer.repeat(domain, repeat, number, *args, **kwargs),
-            {
-                'functions': self.timer.functions,
-                'domain': domain
-            }
+            {"functions": self.timer.functions, "domain": domain},
         )
 
 
 class PlotTimings:
     """Thin interface over _DataSet"""
+
     def __init__(self, data, kwargs):
         self.data = data
         self.kwargs = kwargs
@@ -33,19 +32,9 @@ class PlotTimings:
     def quartile(self, quartile, *, errors=None, outlier=1.5, axis=2):
         """Interface to _DataSet.quartile and errors. Returns a PlotValues."""
         return PlotValues(
+            np.apply_along_axis(helpers.quartile, axis, self.data, outlier, quartile,),
             np.apply_along_axis(
-                helpers.quartile,
-                axis,
-                self.data,
-                outlier,
-                quartile,
-            ),
-            np.apply_along_axis(
-                helpers.errors,
-                axis,
-                self.data,
-                outlier,
-                np.array(errors),
+                helpers.errors, axis, self.data, outlier, np.array(errors),
             ),
             self.kwargs,
         )
@@ -61,27 +50,17 @@ class PlotTimings:
     def mean(self, start=0, end=4, *, errors=((1, 3),), outlier=1.5, axis=2):
         """Interface to _DataSet.mean and errors. Returns a PlotValues."""
         return PlotValues(
+            np.apply_along_axis(helpers.mean, axis, self.data, outlier, start, end,),
             np.apply_along_axis(
-                helpers.mean,
-                axis,
-                self.data,
-                outlier,
-                start,
-                end,
+                helpers.errors, axis, self.data, outlier, np.array(errors),
             ),
-            np.apply_along_axis(
-                helpers.errors,
-                axis,
-                self.data,
-                outlier,
-                np.array(errors),
-            ),
-            self.kwargs
+            self.kwargs,
         )
 
 
 class PlotValues:
     """Thin interface to Graph.graph."""
+
     def __init__(self, values, errors, kwargs):
         self.values = values
         self.errors = errors
@@ -93,7 +72,7 @@ class PlotValues:
             graph,
             self.values,
             self.errors,
-            self.kwargs.pop('domain'),
-            functions=self.kwargs.pop('functions'),
+            self.kwargs.pop("domain"),
+            functions=self.kwargs.pop("functions"),
             **kwargs
         )

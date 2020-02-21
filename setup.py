@@ -1,12 +1,20 @@
 #!/usr/bin/env python
 from setuptools import find_packages, setup
 
+try:
+    import ConfigParser as configparser
+except ImportError:
+    import configparser
+
 with open("README.rst") as f:
     LONG_DESCRIPTION = f.read()
 
+config = configparser.ConfigParser()
+config.read("setup.cfg")
+
 setup(
     name="graphtimer",
-    version="0.0.4",
+    version=config.get("src", "version"),
     license="MIT",
     description="Time code execution and graph results",
     long_description=LONG_DESCRIPTION,
@@ -23,13 +31,14 @@ setup(
     package_dir={"": "src"},
     include_package_data=True,
     zip_safe=False,
-    install_requires=['matplotlib'],
+    install_requires=["matplotlib"],
     classifiers=[
         "Development Status :: 3 - Alpha",
         "Environment :: Console",
         "Intended Audience :: Developers",
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
+        "Programming Language :: Python :: 3.6",
         "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: 3.8",
     ],
