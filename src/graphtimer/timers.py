@@ -1,28 +1,41 @@
 import inspect
 import timeit
+from typing import Any, Callable, Dict, List, Tuple, Type, Union
 
-SENTINAL = object()
+from .types import TimedFunction
+
+SENTINAL: object = object()
 PASSABLE_KEYWORDS = {"_i"}
+
+TimerFunction = Callable[[], int]
+ArgsConvFunction = Callable[..., Tuple[Any, ...]]
 
 
 class MultiTimer:
     """Interface to timeit.Timer to ease timing over multiple functions."""
 
-    def __init__(self, functions, timer=timeit.Timer):
+    functions: List[TimedFunction]
+    timer: Type[timeit.Timer]
+
+    def __init__(
+        self,
+        functions: List[TimedFunction],
+        timer: Type[timeit.Timer] = timeit.Timer,
+    ) -> None:
         self.timer = timer
         self.functions = functions
 
     def build_timer(
         self,
-        fn,
-        domain,
-        stmt="fn(*args)",
-        setup="pass",
-        timer=SENTINAL,
-        globals=SENTINAL,
-        args_conv=SENTINAL,
-        **extras
-    ):
+        fn: TimedFunction,
+        domain: Any,
+        stmt: str = "fn(*args)",
+        setup: str = "pass",
+        timer: Union[TimerFunction, object] = SENTINAL,
+        globals: Union[Dict[str, Any], object] = SENTINAL,
+        args_conv: Union[ArgsConvFunction, object] = SENTINAL,
+        **extras,
+    ) -> timeit.Timer:
         """Build a timeit.Timer"""
         if not isinstance(domain, tuple):
             domain = (domain,)
@@ -58,14 +71,26 @@ class MultiTimer:
 
         return self.timer(stmt, setup, timer, globals=globals)
 
-    def build_timers(self, domain, *args, **kwargs):
+    def build_timers(
+        self,
+        domain: List[Any],
+        *args: Any,
+        **kwargs: Any,
+    ) -> List[List[timeit.Timer]]:
         """Build multiple timers from various inputs and functions"""
         return [
             [self.build_timer(fn, dom, *args, **kwargs) for fn in self.functions]
             for dom in domain
         ]
 
-    def _call(self, domain, repeat, call, *args, **kwargs):
+    def _call(
+        self,
+        domain: List[Any],
+        repeat: int,
+        call: Callable[[timeit.Timer], int],
+        *args: Any,
+        **kwargs: Any
+    ) -> List[List[List[int]]]:
         """Helper function to generate timing data."""
         if len(domain) == 0:
             raise ValueError("domain must have at least one argument.")
@@ -78,18 +103,33 @@ class MultiTimer:
                     output[i][j].append(call(fn))
         return output
 
-    def repeat(self, domain, repeat, number, *args, **kwargs):
+    def repeat(
+        self,
+        domain: List[Any],
+        repeat: int,
+        number: int,
+        *args: Any,
+        **kwargs: Any,
+    ) -> List[List[List[int]]]:
         """Interface to timeit.Timer.repeat. `domain` is the values to pass to the functions."""
         return self._call(domain, repeat, lambda f: f.timeit(number), *args, **kwargs)
 
-    def timeit(self, domain, number, *args, **kwargs):
+    def timeit(
+        self,
+        domain: List[Any],
+        number: int,
+        *args: Any,
+        **kwargs: Any,
+    ) -> List[List[int]]:
         """Interface to timeit.Timer.timeit. `domain` is the values to pass to the functions."""
         return [
             [value[0] for value in values]
             for values in self.repeat(domain, 1, number, *args, **kwargs)
         ]
 
-    def autorange(self, domain, *args, **kwargs):
+    def autorange(
+        self, domain: List[Any], *args: Any, **kwargs: Any
+    ) -> List[List[int]]:
         """Interface to timeit.Timer.autorange. `domain` is the values to pass to the functions."""
         return [
             [value[0] for value in values]
@@ -102,7 +142,9 @@ class MultiTimer:
 class TimerNamespaceMeta(type):
     """Convenience class to ease creation of a MultiTimer."""
 
-    def __new__(mcs, name, bases, attrs):
+    def __new__(
+        mcs: type, name: str, bases: Tuple[type, ...], attrs: Dict[str, Any]
+    ) -> "TimerNamespace":
         if "functions" in attrs:
             raise TypeError("FunctionTimers cannot define `functions`")
         if "multi_timer" in attrs:
@@ -118,5 +160,8 @@ class TimerNamespaceMeta(type):
 class TimerNamespace(metaclass=TimerNamespaceMeta):
     """Convenience class to ease creation of a MultiTimer."""
 
-    TIMER = timeit.Timer
-    MULTI_TIMER = MultiTimer
+    functions: List[TimedFunction]
+    multi_timer: MultiTimer
+
+    TIMER: Type[timeit.Timer] = timeit.Timer
+    MULTI_TIMER: Type[MultiTimer] = MultiTimer

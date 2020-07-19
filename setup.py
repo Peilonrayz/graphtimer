@@ -31,7 +31,7 @@ setup(
     package_dir={"": "src"},
     include_package_data=True,
     zip_safe=False,
-    install_requires=["matplotlib"],
+    install_requires=["matplotlib", "typing_extensions"],
     classifiers=[
         "Development Status :: 3 - Alpha",
         "Environment :: Console",

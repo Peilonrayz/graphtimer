@@ -1,8 +1,22 @@
+from typing import Any, Iterator, List, Optional, Sequence, Tuple, TYPE_CHECKING
+
 from .graphtimer import CATEGORY10
+from .types import Graph, TimedFunction, TIn, TOut
+
+if TYPE_CHECKING:
+    from .plotter import _DataValues
 
 
 class MatPlotLib:
-    def _graph_times(self, graph, values, errors, domain, colors, error, fmt):
+    def _graph_times(
+        self,
+        graph: TIn,
+        data: List[List["_DataValues"]],
+        domain: List[Any],
+        colors: Tuple[str, ...],
+        error: bool,
+        fmt: str,
+    ) -> Iterator[TOut]:
         for values, errors, color in zip(values, errors, colors):
             if error:
                 errors = zip(*errors)
@@ -15,19 +29,18 @@ class MatPlotLib:
 
     def graph(
         self,
-        graph,
-        values,
-        errors,
-        domain,
+        graph: TIn,
+        values: List[List["_DataValues"]],
+        errors: List[Any],
+        domain: List[Any],
         *,
-        functions=None,
-        colors=CATEGORY10,
-        title=None,
-        legend=True,
-        error=True,
-        x_label="Input",
-        y_label="Time [s]",
-        fmt="-"
+        functions: Optional[List[TimedFunction]] = None,
+        colors: Tuple[str, ...] = CATEGORY10,
+        title: Optional[str] = None,
+        legend: bool = True,
+        error: bool = True,
+        x_label: Optional[str] = "Input",
+        y_label: Optional[str] 
     ):
         lines = list(
             self._graph_times(graph, values, errors, domain, colors, error, fmt)

@@ -4,6 +4,7 @@ import helpers.functions as se_code
 import matplotlib.pyplot as plt
 import numpy as np
 import pytest
+
 from graphtimer import Plotter, flat
 
 ALL_TESTS = True

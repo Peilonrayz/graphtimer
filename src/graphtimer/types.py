@@ -12,12 +12,6 @@ from typing import (
 
 import typing_extensions
 
-CATEGORY10: Tuple[str, ...]
-CATEGORY20: Tuple[str, ...]
-CATEGORY20b: Tuple[str, ...]
-CATEGORY20c: Tuple[str, ...]
-
-def flat(i: Any) -> Sequence[Any]: ...
 
 TimedFunction = Callable[..., Any]
 
@@ -48,7 +42,7 @@ class Graph(typing_extensions.Protocol, Generic[TIn, TOut]):
         domain: List[Any],
         *,
         functions: Optional[List[TimedFunction]] = None,
-        colors: Tuple[str, ...] = CATEGORY10,
+        colors: Tuple[str, ...] = (),
         title: Optional[str] = None,
         legend: bool = True,
         error: bool = True
