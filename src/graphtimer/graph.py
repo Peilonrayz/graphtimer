@@ -1,4 +1,4 @@
-from typing import Any, Iterator, List, Optional, Sequence, Tuple, TYPE_CHECKING
+from typing import TYPE_CHECKING, Any, Iterator, List, Optional, Sequence, Tuple
 
 from .graphtimer import CATEGORY10
 from .types import Graph, TimedFunction, TIn, TOut
@@ -11,14 +11,15 @@ class MatPlotLib:
     def _graph_times(
         self,
         graph: TIn,
-        data: List[List["_DataValues"]],
+        values: List[List["_DataValues"]],
+        errors: List[Any],
         domain: List[Any],
         colors: Tuple[str, ...],
         error: bool,
         fmt: str,
     ) -> Iterator[TOut]:
         for values, errors, color in zip(values, errors, colors):
-            if error:
+            if error and not any(e is None for e in errors):
                 errors = zip(*errors)
                 for error in errors:
                     lower, upper = zip(*error)
@@ -40,7 +41,8 @@ class MatPlotLib:
         legend: bool = True,
         error: bool = True,
         x_label: Optional[str] = "Input",
-        y_label: Optional[str] 
+        y_label: Optional[str] = "Time [s]",
+        fmt="-"
     ):
         lines = list(
             self._graph_times(graph, values, errors, domain, colors, error, fmt)

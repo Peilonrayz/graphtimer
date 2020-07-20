@@ -8,11 +8,12 @@ import pytest
 from graphtimer import Plotter, flat
 
 ALL_TESTS = True
+FIGS = pathlib.Path("static/figs")
+FIGS.mkdir(parents=True, exist_ok=True)
 
 
 @pytest.mark.skipif(
-    pathlib.Path("static/figs/reverse.png").exists() and ALL_TESTS,
-    reason="Output image already exists",
+    (FIGS / "reverse.png").exists() and ALL_TESTS, reason="Output image already exists",
 )
 def test_reverse_plot():
     fig, axs = plt.subplots()
@@ -24,12 +25,12 @@ def test_reverse_plot():
         .min()
         .plot(axs, title="Reverse", fmt="-o")
     )
-    fig.savefig("static/figs/reverse.png")
-    fig.savefig("static/figs/reverse.svg")
+    fig.savefig(str(FIGS / "reverse.png"))
+    fig.savefig(str(FIGS / "reverse.svg"))
 
 
 @pytest.mark.skipif(
-    pathlib.Path("static/figs/graipher.png").exists() and ALL_TESTS,
+    (FIGS / "graipher.png").exists() and ALL_TESTS,
     reason="Output image already exists",
 )
 def test_graipher_plot():
@@ -40,12 +41,12 @@ def test_graipher_plot():
         .min()
         .plot(axs, title="Graipher", fmt="-o")
     )
-    fig.savefig("static/figs/graipher.png")
-    fig.savefig("static/figs/graipher.svg")
+    fig.savefig(str(FIGS / "graipher.png"))
+    fig.savefig(str(FIGS / "graipher.svg"))
 
 
 @pytest.mark.skipif(
-    pathlib.Path("static/figs/peilonrayz.png").exists() and ALL_TESTS,
+    (FIGS / "peilonrayz.png").exists() and ALL_TESTS,
     reason="Output image already exists",
 )
 def test_peilonrayz_plot():
@@ -62,5 +63,5 @@ def test_peilonrayz_plot():
             .min(errors=((-1, 3), (-1, 4)))
             .plot(graph, title=title)
         )
-    fig.savefig("static/figs/peilonrayz.png")
-    fig.savefig("static/figs/peilonrayz.svg")
+    fig.savefig(str(FIGS / "peilonrayz.png"))
+    fig.savefig(str(FIGS / "peilonrayz.svg"))

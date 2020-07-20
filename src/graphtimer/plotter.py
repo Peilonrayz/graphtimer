@@ -1,4 +1,14 @@
-from typing import Any, Dict, List, Optional, Sequence, Tuple, Type, Union, TYPE_CHECKING
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    Dict,
+    List,
+    Optional,
+    Sequence,
+    Tuple,
+    Type,
+    Union,
+)
 
 import numpy as np
 
@@ -12,8 +22,10 @@ ErrorValues = Optional[List[Tuple[Value, Value]]]
 Outlier = Optional[float]
 KWArgs = Dict[Any, Any]
 
+
 class PlotValues:
     """Thin interface to Graph.graph."""
+
     values: List[float]
     errors: List[float]
     kwargs: KWArgs
@@ -35,12 +47,13 @@ class PlotValues:
             self.errors,
             self.kwargs.pop("domain"),
             functions=self.kwargs.pop("functions"),
-            **kwargs
+            **kwargs,
         )
 
 
 class PlotTimings:
     """Thin interface over _DataSet"""
+
     data: List[List[List[Value]]]
     kwargs: KWArgs
 
@@ -49,7 +62,12 @@ class PlotTimings:
         self.kwargs = kwargs
 
     def quartile(
-        self, quartile: int, *, errors: ErrorInputs = None, outlier: Outlier = 1.5, axis: int = 2
+        self,
+        quartile: int,
+        *,
+        errors: ErrorInputs = None,
+        outlier: Outlier = 1.5,
+        axis: int = 2,
     ) -> PlotValues:
         """Interface to _DataSet.quartile and errors. Returns a PlotValues."""
         return PlotValues(
@@ -93,7 +111,9 @@ class PlotTimings:
 
 class Plotter:
     """Interface to the timer object. Returns objects made to ease usage."""
+
     timer: MultiTimerObject
+
     def __init__(
         self, timer: Union[MultiTimerObject, Type[FunctionTimerObject]]
     ) -> None:

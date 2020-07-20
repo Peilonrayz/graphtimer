@@ -18,9 +18,7 @@ class MultiTimer:
     timer: Type[timeit.Timer]
 
     def __init__(
-        self,
-        functions: List[TimedFunction],
-        timer: Type[timeit.Timer] = timeit.Timer,
+        self, functions: List[TimedFunction], timer: Type[timeit.Timer] = timeit.Timer,
     ) -> None:
         self.timer = timer
         self.functions = functions
@@ -72,10 +70,7 @@ class MultiTimer:
         return self.timer(stmt, setup, timer, globals=globals)
 
     def build_timers(
-        self,
-        domain: List[Any],
-        *args: Any,
-        **kwargs: Any,
+        self, domain: List[Any], *args: Any, **kwargs: Any,
     ) -> List[List[timeit.Timer]]:
         """Build multiple timers from various inputs and functions"""
         return [
@@ -89,7 +84,7 @@ class MultiTimer:
         repeat: int,
         call: Callable[[timeit.Timer], int],
         *args: Any,
-        **kwargs: Any
+        **kwargs: Any,
     ) -> List[List[List[int]]]:
         """Helper function to generate timing data."""
         if len(domain) == 0:
@@ -104,22 +99,13 @@ class MultiTimer:
         return output
 
     def repeat(
-        self,
-        domain: List[Any],
-        repeat: int,
-        number: int,
-        *args: Any,
-        **kwargs: Any,
+        self, domain: List[Any], repeat: int, number: int, *args: Any, **kwargs: Any,
     ) -> List[List[List[int]]]:
         """Interface to timeit.Timer.repeat. `domain` is the values to pass to the functions."""
         return self._call(domain, repeat, lambda f: f.timeit(number), *args, **kwargs)
 
     def timeit(
-        self,
-        domain: List[Any],
-        number: int,
-        *args: Any,
-        **kwargs: Any,
+        self, domain: List[Any], number: int, *args: Any, **kwargs: Any,
     ) -> List[List[int]]:
         """Interface to timeit.Timer.timeit. `domain` is the values to pass to the functions."""
         return [
